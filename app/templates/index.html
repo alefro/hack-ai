@@ -71,6 +71,30 @@
             </div>
         </div>
         <!-- /.row -->
+
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+              <form>
+                  <div class="form-group">
+                    <label for="exampleInputEmail1">Молекула в формате SMILES</label>
+                    <input type="text" class="form-control" id="target">
+                  </div>
+                    <div>Примеры:</div>
+                    <ul>
+                        <li>CCCS(=O)(=O)Nc1ccc(F)c(c1F)C(=O)c2c[nH]c3c2cc(cn3)c4ccc(Cl)cc4</li>
+                        <li>CC(C)(C)c1nc(c(s1)c2ccnc(n2)N)c3cccc(c3F)NS(=O)(=O)c4c(cccc4F)F</li>
+                        <li>CNC(=O)c1cc(ccn1)Oc2ccc(cc2)NC(=O)Nc3ccc(c(c3)C(F)(F)F)Cl</li>
+                        <li>C[C@@H](CNc1nccc(n1)c2cn(nc2c3cc(cc(c3F)NS(=O)(=O)C)Cl)C(C)C)NC(=O)OC</li>
+                    </ul>
+                  <button class="btn btn-default btn-primary" id="run">Найти</button>
+                </form>
+
+                <h4>Результаты:</h4>
+                <div id="results">
+
+                </div>
+            </div>
+        </div>
     </div>
     <!-- /.container -->
 
@@ -79,7 +103,7 @@
 
     <!-- Bootstrap Core JavaScript -->
     <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
-
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 
 </html>
