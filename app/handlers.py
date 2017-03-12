@@ -81,4 +81,4 @@ def get_sim(s1, s2):
 def save_image(smiles, id):
     mi = Chem.MolFromSmiles(smiles)
     img = Draw.MolToImage(mi, highlightAtoms=[1, 2], highlightColor=ColorConverter().to_rgb('aqua'))
-    img.save("/home/devel/notebooks/" + id + ".png")
+    img.save("/home/devel/notebook/" + id + ".png")
