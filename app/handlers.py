@@ -16,7 +16,7 @@ class PipelineHandler(BaseHandler):
     def dispatch_request(self):
         sol_treshold_lo = -5
         sol_treshold_hi = 0
-        dist_treshold = 1
+        dist_treshold = 0.2
 
         smiles = ["CCCS(=O)(=O)Nc1ccc(F)c(c1F)C(=O)c2c[nH]c3c2cc(cn3)c4ccc(Cl)cc4",
                   "CC(C)(C)c1nc(c(s1)c2ccnc(n2)N)c3cccc(c3F)NS(=O)(=O)c4c(cccc4F)F",
@@ -29,7 +29,7 @@ class PipelineHandler(BaseHandler):
         smiles = generate_molecules()
         # smiles = filter_solubility(smiles, sol_treshold_lo, sol_treshold_hi)
         # smiles = filter_bbb(smiles)
-        # smiles = filter_distance(smiles, target, dist_treshold)
+        smiles = filter_distance(smiles, target, dist_treshold)
 
         return json.dumps(smiles)
 
@@ -37,7 +37,7 @@ class PipelineHandler(BaseHandler):
 def generate_molecules():
     import subprocess
     output = subprocess.Popen(
-        ["python", "/home/devel/char-rnn-tensorflow/sample.py", "--save_dir", "/home/devel/smiles2", "--prime", "c", "-n", "10000"],
+        ["sudo", "-u", "devel", "python", "/home/devel/char-rnn-tensorflow/sample.py", "--save_dir", "/home/devel/smiles2", "--prime", "c", "-n", "1000"],
         stdout=subprocess.PIPE).communicate()[0]
     smiles = output.split("\n")
     smiles = smiles[:-2]
@@ -50,4 +50,22 @@ def filter_bbb(smiles):
     pass
 
 def filter_distance(smiles, target, dist_treshold):
-    pass
+    return [s for s in smiles if get_sim(s, target) > dist_treshold]
+
+
+from rdkit import Chem
+from rdkit.Chem import AllChem
+from rdkit import DataStructs
+
+
+def get_sim(s1, s2):
+    try:
+      m1 = Chem.MolFromSmiles(s1)
+      m2 = Chem.MolFromSmiles(s2)
+      if m1 is None or m2 is None:
+          return 0
+      fp1 = AllChem.GetMorganFingerprint(m1, 2)
+      fp2 = AllChem.GetMorganFingerprint(m2, 2)
+      return DataStructs.DiceSimilarity(fp1, fp2)
+    except:
+     return 0
