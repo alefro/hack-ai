@@ -27,9 +27,15 @@ class PipelineHandler(BaseHandler):
         target = data.get(u'target')
 
         smiles = generate_molecules()
+        print ("Generated: %d" % len(smiles))
+
         smiles = list(filter_solubility(smiles, sol_treshold_lo, sol_treshold_hi))
+
+        print ("Satisfy solubility: %d" % len(smiles))
         # smiles = filter_bbb(smiles)
         smiles = filter_distance(smiles, target, dist_treshold)
+
+        print ("Satisfy similarity: %d" % len(smiles))
 
         import uuid
         smiles = [{ 'smiles': s, 'id': str(uuid.uuid4())} for s in smiles]
