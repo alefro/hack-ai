@@ -35,7 +35,7 @@ class PipelineHandler(BaseHandler):
         smiles = [{ 'smiles': s, 'id': str(uuid.uuid4())} for s in smiles]
 
         for s in smiles:
-            save_image(s.smiles, s.id)
+            save_image(s.get('smiles'), s.get('id'))
 
         return json.dumps(smiles)
 
