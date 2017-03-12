@@ -15,7 +15,7 @@ class IndexHandler(BaseHandler):
 class PipelineHandler(BaseHandler):
     def dispatch_request(self):
         sol_treshold_lo = -5
-        sol_treshold_hi = 0
+        sol_treshold_hi = -2
         dist_treshold = 0.2
 
         smiles = ["CCCS(=O)(=O)Nc1ccc(F)c(c1F)C(=O)c2c[nH]c3c2cc(cn3)c4ccc(Cl)cc4",
@@ -27,7 +27,7 @@ class PipelineHandler(BaseHandler):
         target = data.get(u'target')
 
         smiles = generate_molecules()
-        # smiles = filter_solubility(smiles, sol_treshold_lo, sol_treshold_hi)
+        smiles = list(filter_solubility(smiles, sol_treshold_lo, sol_treshold_hi))
         # smiles = filter_bbb(smiles)
         smiles = filter_distance(smiles, target, dist_treshold)
 
@@ -50,6 +50,21 @@ def generate_molecules():
     return smiles
 
 def filter_solubility(smiles, treshold_lo, treshold_hi):
+    import xgboost as xgb
+    bst = xgb.Booster({'nthread': 4})  # init model
+    bst.load_model("/home/devel/notebook/logS_trained.model")  # load data
+
+    def logS_for_smiles(smiles_str):
+        mol = Chem.MolFromSmiles(smiles_str)
+        if mol is None:
+            return None
+        data = xgb.DMatrix([[x for x in AllChem.GetMorganFingerprintAsBitVect(mol, 2)]])
+        return bst.predict(data)[0]
+
+    for i in smiles:
+        logS = logS_for_smiles(i)
+        if logS >= treshold_lo and logS <= treshold_hi:
+            yield i
     pass
 
 def filter_bbb(smiles):
