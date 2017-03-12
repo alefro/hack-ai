@@ -12,7 +12,7 @@ $(document).ready(function () {
                 contentType: "application/json; charset=utf-8",
                 success: function(response){
                     $.each(response, function (i, s) {
-                        $("#results").append("<div>" + s  + "</div>")
+                        $("#results").append("<div>" + s.smiles  + "</div>")
                     });
                 }
             });

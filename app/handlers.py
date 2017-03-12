@@ -31,6 +31,12 @@ class PipelineHandler(BaseHandler):
         # smiles = filter_bbb(smiles)
         smiles = filter_distance(smiles, target, dist_treshold)
 
+        import uuid
+        smiles = [{ 'smiles': s, 'id': str(uuid.uuid4())} for s in smiles]
+
+        for s in smiles:
+            save_image(s.smiles, s.id)
+
         return json.dumps(smiles)
 
 
@@ -54,8 +60,10 @@ def filter_distance(smiles, target, dist_treshold):
 
 
 from rdkit import Chem
+from rdkit.Chem import Draw
 from rdkit.Chem import AllChem
 from rdkit import DataStructs
+from matplotlib.colors import ColorConverter
 
 
 def get_sim(s1, s2):
@@ -69,3 +77,8 @@ def get_sim(s1, s2):
       return DataStructs.DiceSimilarity(fp1, fp2)
     except:
      return 0
+
+def save_image(smiles, id):
+    mi = Chem.MolFromSmiles(smiles)
+    img = Draw.MolToImage(mi, highlightAtoms=[1, 2], highlightColor=ColorConverter().to_rgb('aqua'))
+    img.save("/home/devel/notebooks/" + id + ".png")
