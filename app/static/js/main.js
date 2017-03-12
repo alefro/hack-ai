@@ -11,6 +11,7 @@ $(document).ready(function () {
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
                 success: function(response){
+                     $("#results").empty();
                     $.each(response, function (i, s) {
                         $("#results").append("<div>" + s.smiles  + "</div><img src=\"/img/" + s.id + ".png\">")
                     });
