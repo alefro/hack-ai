@@ -4,7 +4,7 @@ $(document).ready(function () {
             e.preventDefault();
             var target = $("#target").val();
             $("#results").empty();
-            var spinner = Spinner({position: "relative", top: "20px"}).spin($("#results")[0]);
+            var spinner = new Spinner({position: "relative", top: "20px"}).spin($("#results")[0]);
 
             $.ajax ({
                 url: "/pipeline",
